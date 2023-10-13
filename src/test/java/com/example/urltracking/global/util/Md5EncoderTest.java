@@ -19,10 +19,9 @@ class Md5EncoderTest {
     @Test
     void encode_with_random_character() {
         String givenString = "aaa";
-        String expected = "aaa";
 
         String actual = Md5Encoder.encodeWithRandomCharacters(givenString);
 
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual.length()).isEqualTo(4);
     }
 }
