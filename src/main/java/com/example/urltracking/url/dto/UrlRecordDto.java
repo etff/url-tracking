@@ -1,5 +1,8 @@
 package com.example.urltracking.url.dto;
 
 
-public record UrlRecordDto(String url) {
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.URL;
+
+public record UrlRecordDto(@URL @NotNull String url) {
 }

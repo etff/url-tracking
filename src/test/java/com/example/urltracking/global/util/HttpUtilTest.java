@@ -4,13 +4,15 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class Base62EncoderTest {
+class HttpUtilTest {
 
     @Test
-    void encode() {
+    void replace_https() {
         String given = "https://www.naver.com";
-        String actual = Base62Encoder.encode(given.getBytes());
+        String expected = "http://www.naver.com";
 
-        assertThat(actual).isNotNull();
+        String actual = HttpUtil.replaceHttps(given);
+
+        assertThat(actual).isEqualTo(expected);
     }
 }
