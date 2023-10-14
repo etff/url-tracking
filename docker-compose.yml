@@ -13,3 +13,19 @@ services:
       - "name=redis"
       - "mode=standalone"
     command: redis-server /usr/local/conf/redis.conf
+  mysql:
+    image: mysql:8.0
+    restart: always
+    container_name: mysql
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      TZ: Asia/Seoul
+      MYSQL_DATABASE: url_record
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/data:/var/lib/mysql

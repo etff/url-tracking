@@ -47,7 +47,7 @@ class UrlRecordServiceTest {
         assertAll(
                 () -> assertThat(actual.getId()).isEqualTo(givenId),
                 () -> assertThat(actual.getUrl()).isEqualTo(givenUrl),
-                () -> assertThat(actual.getCount()).isEqualTo(1)
+                () -> assertThat(actual.getTotalCount()).isEqualTo(1)
         );
     }
 
@@ -66,7 +66,7 @@ class UrlRecordServiceTest {
         assertAll(
                 () -> assertThat(actual.getId()).isEqualTo(givenId),
                 () -> assertThat(actual.getUrl()).isEqualTo(givenUrl),
-                () -> assertThat(actual.getCount()).isEqualTo(2)
+                () -> assertThat(actual.getTotalCount()).isEqualTo(2)
         );
     }
 }

@@ -13,16 +13,15 @@ public class UrlRecordTemp implements Serializable {
     @Id
     private String id;
     private String url;
-    private Integer count;
+    private Integer totalCount;
 
-
-    public UrlRecordTemp(String id, String url, Integer count) {
+    public UrlRecordTemp(String id, String url, Integer totalCount) {
         this.id = id;
         this.url = url;
-        this.count = count;
+        this.totalCount = totalCount;
     }
 
     public void increaseCount() {
-        this.count += 1;
+        this.totalCount += 1;
     }
 }
