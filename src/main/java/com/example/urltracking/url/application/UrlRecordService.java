@@ -43,7 +43,7 @@ public class UrlRecordService {
         final String generatedId = idGenerator.generateId(url);
         Optional<UrlRecordTemp> urlRecord = urlRecordTempRepository.findById(generatedId);
         if (urlRecord.isPresent()) {
-            return urlRecord.get().getCount();
+            return urlRecord.get().getTotalCount();
         }
         return 0;
     }
