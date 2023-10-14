@@ -15,7 +15,7 @@ public class UrlRecordTemp implements Serializable {
     private String url;
     private Integer totalCount;
 
-    public UrlRecordTemp(String id, String url, Integer count) {
+    public UrlRecordTemp(String id, String url, Integer totalCount) {
         this.id = id;
         this.url = url;
         this.totalCount = totalCount;
