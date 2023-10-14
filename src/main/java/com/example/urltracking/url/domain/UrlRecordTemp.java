@@ -11,10 +11,12 @@ import java.io.Serializable;
 public class UrlRecordTemp implements Serializable {
 
     @Id
+    private String id;
     private String url;
     private Integer totalCount;
 
-    public UrlRecordTemp(String url, Integer totalCount) {
+    public UrlRecordTemp(String id, String url, Integer count) {
+        this.id = id;
         this.url = url;
         this.totalCount = totalCount;
     }
