@@ -36,7 +36,7 @@ public class UrlRecordService {
     public Integer getUrlCount(String url) {
         Optional<UrlRecordTemp> urlRecord = urlRecordTempRepository.findById(url);
         if (urlRecord.isPresent()) {
-            return urlRecord.get().getCount();
+            return urlRecord.get().getTotalCount();
         }
         return 0;
     }
