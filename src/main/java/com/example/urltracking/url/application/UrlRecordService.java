@@ -1,8 +1,11 @@
 package com.example.urltracking.url.application;
 
 import com.example.urltracking.url.application.factory.IdGenerator;
+import com.example.urltracking.url.domain.UrlRecord;
 import com.example.urltracking.url.domain.UrlRecordTemp;
+import com.example.urltracking.url.dto.UrlCountsResponseDto;
 import com.example.urltracking.url.infra.UrlRecordDailyRepository;
+import com.example.urltracking.url.infra.UrlRecordRepository;
 import com.example.urltracking.url.infra.UrlRecordTempRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,7 @@ import java.util.Optional;
 public class UrlRecordService {
     private final UrlRecordTempRepository urlRecordTempRepository;
     private final UrlRecordDailyRepository urlRecordDailyRepository;
+    private final UrlRecordRepository urlRecordRepository;
     private final IdGenerator idGenerator;
 
     @Transactional
@@ -48,13 +52,25 @@ public class UrlRecordService {
      * @return 전체 count.
      */
     @Transactional(readOnly = true)
-    public Integer getSevenDaysUrlCount(String url) {
+    public UrlCountsResponseDto getCounts(String url) {
         final String generatedId = idGenerator.generateId(url);
+        Optional<UrlRecord> urlRecord = urlRecordRepository.findById(generatedId);
+        Optional<UrlRecordTemp> todayUrlRecord = urlRecordTempRepository.findById(generatedId);
 
-        Integer sixDaysTotal = getSixDaysTotalCounts(generatedId);
-        Optional<UrlRecordTemp> urlRecord = urlRecordTempRepository.findById(generatedId);
-        return urlRecord.map(urlRecordTemp ->
-                sixDaysTotal + urlRecordTemp.getTotalCount()).orElse(sixDaysTotal);
+        if (urlRecord.isEmpty() && todayUrlRecord.isEmpty()) {
+            return new UrlCountsResponseDto(0, 0);
+        }
+        if (urlRecord.isPresent() && todayUrlRecord.isEmpty()) {
+            return new UrlCountsResponseDto(0, urlRecord.get().getTotalCount());
+        }
+        if (urlRecord.isEmpty()) {
+            Integer todayCounts = todayUrlRecord.get().getTotalCount();
+            return new UrlCountsResponseDto(todayCounts, todayCounts);
+        }
+        UrlRecordTemp urlRecordTemp = todayUrlRecord.get();
+        int todayCounts = urlRecordTemp.getTotalCount();
+        int totalCounts = todayCounts + urlRecord.get().getTotalCount();
+        return new UrlCountsResponseDto(todayCounts, totalCounts);
     }
 
     private Integer getSixDaysTotalCounts(String generatedId) {
@@ -70,5 +86,15 @@ public class UrlRecordService {
         UrlRecordTemp urlRecordTemp = new UrlRecordTemp(id, url, 1);
         urlRecordTempRepository.save(urlRecordTemp);
         return urlRecordTemp;
+    }
+
+    @Transactional(readOnly = true)
+    public int getUrlStatistic(String url) {
+        final String generatedId = idGenerator.generateId(url);
+        Integer sixDaysTotal = getSixDaysTotalCounts(generatedId);
+        Optional<UrlRecordTemp> urlRecord = urlRecordTempRepository.findById(generatedId);
+
+        return urlRecord.map(urlRecordTemp ->
+                sixDaysTotal + urlRecordTemp.getTotalCount()).orElse(sixDaysTotal);
     }
 }
