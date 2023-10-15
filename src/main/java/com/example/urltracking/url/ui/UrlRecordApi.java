@@ -22,6 +22,6 @@ public class UrlRecordApi {
 
     @PostMapping("/counts")
     public int getUrlCount(@RequestBody @Valid UrlRecordDto urlRecordDto) {
-        return urlRecordService.getUrlCount(urlRecordDto.url());
+        return urlRecordService.getSevenDaysUrlCount(urlRecordDto.url());
     }
 }

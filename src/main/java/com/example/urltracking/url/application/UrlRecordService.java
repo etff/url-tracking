@@ -2,12 +2,14 @@ package com.example.urltracking.url.application;
 
 import com.example.urltracking.url.application.factory.IdGenerator;
 import com.example.urltracking.url.domain.UrlRecordTemp;
+import com.example.urltracking.url.infra.UrlRecordDailyRepository;
 import com.example.urltracking.url.infra.UrlRecordTempRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -15,6 +17,7 @@ import java.util.Optional;
 @Slf4j
 public class UrlRecordService {
     private final UrlRecordTempRepository urlRecordTempRepository;
+    private final UrlRecordDailyRepository urlRecordDailyRepository;
     private final IdGenerator idGenerator;
 
     @Transactional
@@ -38,14 +41,28 @@ public class UrlRecordService {
         return urlRecordTemp;
     }
 
+    /**
+     * 일주일간의 url count 조회를 리턴한다 (redis + db).
+     *
+     * @param url 입력받은 주소.
+     * @return 전체 count.
+     */
     @Transactional(readOnly = true)
-    public Integer getUrlCount(String url) {
+    public Integer getSevenDaysUrlCount(String url) {
         final String generatedId = idGenerator.generateId(url);
+
+        Integer sixDaysTotal = getSixDaysTotalCounts(generatedId);
         Optional<UrlRecordTemp> urlRecord = urlRecordTempRepository.findById(generatedId);
-        if (urlRecord.isPresent()) {
-            return urlRecord.get().getTotalCount();
-        }
-        return 0;
+        return urlRecord.map(urlRecordTemp ->
+                sixDaysTotal + urlRecordTemp.getTotalCount()).orElse(sixDaysTotal);
+    }
+
+    private Integer getSixDaysTotalCounts(String generatedId) {
+        return urlRecordDailyRepository.sumTotalCountByRecordDate(
+                generatedId,
+                LocalDate.now().minusDays(7),
+                LocalDate.now().minusDays(1)
+        );
     }
 
     private UrlRecordTemp retrySaveUrl(String url) {

@@ -49,7 +49,7 @@ class UrlRecordApiTest {
         UrlRecordDto request = new UrlRecordDto(url);
         UrlRecordTemp givenUrlRecordTemp = new UrlRecordTemp("aaabbbcccd", "https://www.naver.com", 1);
 
-        given(urlRecordService.getUrlCount(url))
+        given(urlRecordService.getSevenDaysUrlCount(url))
                 .willReturn(1);
 
         mvc.perform(post("/api/v1/url/counts")
