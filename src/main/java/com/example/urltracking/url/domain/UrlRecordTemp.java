@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Getter
 @RedisHash(value = "url_record", timeToLive = 86400)
@@ -23,5 +24,13 @@ public class UrlRecordTemp implements Serializable {
 
     public void increaseCount() {
         this.totalCount += 1;
+    }
+
+    public UrlRecord toUrlRecord() {
+        return new UrlRecord(this.id, this.url, this.totalCount);
+    }
+
+    public UrlRecordDaily toUrlRecordDaily() {
+        return new UrlRecordDaily(this.totalCount, LocalDate.now());
     }
 }
