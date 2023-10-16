@@ -3,12 +3,15 @@ package com.example.urltracking.url.ui;
 import com.example.urltracking.url.application.UrlRecordService;
 import com.example.urltracking.url.dto.UrlCountsResponseDto;
 import com.example.urltracking.url.dto.UrlRecordDto;
+import com.example.urltracking.url.dto.UrlStatisticResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/url")
@@ -27,7 +30,7 @@ public class UrlRecordApi {
     }
 
     @PostMapping("/statistic")
-    public int getUrlStatistic(@RequestBody @Valid UrlRecordDto urlRecordDto) {
+    public List<UrlStatisticResponseDto> getUrlStatistic(@RequestBody @Valid UrlRecordDto urlRecordDto) {
         return urlRecordService.getUrlStatistic(urlRecordDto.url());
     }
 }

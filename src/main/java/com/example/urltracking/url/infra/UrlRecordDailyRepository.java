@@ -6,15 +6,16 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface UrlRecordDailyRepository extends CrudRepository<UrlRecordDaily, Long> {
 
-    @Query(value = "SELECT coalesce(sum(URD.totalCount),0) " +
+    @Query(value = "SELECT URD " +
             "FROM UrlRecordDaily URD " +
             "WHERE URD.urlRecord.id = :urlRecordId " +
             "and URD.recordDate " +
             "between :fromDate and :toDate")
-    Integer sumTotalCountByRecordDate(
+    List<UrlRecordDaily> sumTotalCountByRecordDate(
             @Param("urlRecordId") String urlRecordId,
             @Param("fromDate") LocalDate fromDate,
             @Param("toDate") LocalDate toDate
