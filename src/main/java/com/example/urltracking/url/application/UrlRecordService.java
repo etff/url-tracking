@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -84,7 +84,7 @@ public class UrlRecordService {
                 )
                 .stream()
                 .map(it -> new UrlStatisticResponseDto(it.getRecordDate(), it.getTotalCount()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private UrlRecordTemp retrySaveUrl(String url) {
@@ -100,11 +100,15 @@ public class UrlRecordService {
         Optional<UrlRecordTemp> urlRecord = urlRecordTempRepository.findById(generatedId);
         List<UrlStatisticResponseDto> savedDaysRecords = getSixDaysRecords(generatedId);
         if (urlRecord.isEmpty()) {
-            return savedDaysRecords;
+            return savedDaysRecords.stream()
+                    .sorted(Comparator.comparing(UrlStatisticResponseDto::recordDate).reversed())
+                    .toList();
         }
 
         UrlRecordTemp urlRecordTemp = urlRecord.get();
         savedDaysRecords.add(new UrlStatisticResponseDto(LocalDate.now(), urlRecordTemp.getTotalCount()));
-        return savedDaysRecords;
+        return savedDaysRecords.stream()
+                .sorted(Comparator.comparing(UrlStatisticResponseDto::recordDate).reversed())
+                .toList();
     }
 }
