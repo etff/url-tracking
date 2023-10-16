@@ -36,4 +36,23 @@ public class UrlRecordDaily {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "url_record_id")
     private UrlRecord urlRecord;
+
+    public UrlRecordDaily(Integer totalCount, LocalDate recordDate, UrlRecord urlRecord) {
+        this.totalCount = totalCount;
+        this.recordDate = recordDate;
+        this.urlRecord = urlRecord;
+    }
+
+    public UrlRecordDaily(Integer totalCount, LocalDate recordDate) {
+        this.totalCount = totalCount;
+        this.recordDate = recordDate;
+    }
+
+    /**
+     * 연관관계 편의메서드.
+     */
+    public void setUrlRecord(UrlRecord urlRecord) {
+        this.urlRecord = urlRecord;
+    }
+
 }

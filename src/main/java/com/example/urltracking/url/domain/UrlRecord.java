@@ -32,4 +32,23 @@ public class UrlRecord extends BaseEntity {
 
     @OneToMany(mappedBy = "urlRecord", cascade = CascadeType.ALL)
     private List<UrlRecordDaily> urlRecordDailies = new ArrayList<>();
+
+    public UrlRecord(String id, String url, Integer totalCount) {
+        this.id = id;
+        this.originalUrl = url;
+        this.totalCount = totalCount;
+        this.urlRecordDailies = new ArrayList<>();
+    }
+
+    /**
+     * 연관관계 편의 메서드.
+     */
+    public void addUrlRecordDaily(UrlRecordDaily urlRecordDaily) {
+        this.urlRecordDailies.add(urlRecordDaily);
+        urlRecordDaily.setUrlRecord(this);
+    }
+
+    public void increaseCount(int count) {
+        this.totalCount += count;
+    }
 }

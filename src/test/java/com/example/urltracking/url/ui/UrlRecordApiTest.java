@@ -2,6 +2,7 @@ package com.example.urltracking.url.ui;
 
 import com.example.urltracking.url.application.UrlRecordService;
 import com.example.urltracking.url.domain.UrlRecordTemp;
+import com.example.urltracking.url.dto.UrlCountsResponseDto;
 import com.example.urltracking.url.dto.UrlRecordDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -47,16 +48,17 @@ class UrlRecordApiTest {
     void get_url_count() throws Exception {
         String url = "https://www.naver.com";
         UrlRecordDto request = new UrlRecordDto(url);
-        UrlRecordTemp givenUrlRecordTemp = new UrlRecordTemp("aaabbbcccd", "https://www.naver.com", 1);
+        UrlCountsResponseDto givenUrlCountsResponseDto = new UrlCountsResponseDto(1, 1);
 
-        given(urlRecordService.getUrlCount(url))
-                .willReturn(1);
+        given(urlRecordService.getCounts(url))
+                .willReturn(givenUrlCountsResponseDto);
 
         mvc.perform(post("/api/v1/url/counts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("1"))
+                .andExpect(MockMvcResultMatchers.content().string(
+                        objectMapper.writeValueAsString(givenUrlCountsResponseDto)))
                 .andDo(MockMvcResultHandlers.print());
     }
 }
